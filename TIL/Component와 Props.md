@@ -51,7 +51,7 @@ const element = <Welcome name = 'Chamy' />;
 ```
 
 <br>
-elemnt는 우리가 위에서 정의했던 Welcome 컴포넌트의 리턴 값을 가지게 된다.
+element는 우리가 위에서 정의했던 Welcome 컴포넌트의 리턴 값을 가지게 된다.
 
 컴포넌트를 최정적으로 루트 DOM으로 전달하려면 다음 코드처럼 사용하면 된다.
 
