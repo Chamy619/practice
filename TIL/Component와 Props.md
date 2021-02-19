@@ -70,7 +70,7 @@ ReactDOM.render(element, document.getElementById('root'));
 <br>
 위의 코드에서 일어나는 일들은 다음과 같다.
 
-1. ReactDom,render()이 호출된다.
+1. ReactDom.render()이 호출된다.
 2. React는 {name: 'Chamy'}의 props를 Welcome 컴포넌트로 전달한다.
 3. Welcome 컴포넌트는 \<h1>Hello, Chamy</h1> 엘리먼트를 반환한다.
 4. React DOM은 DOM을 업데이트한다.
