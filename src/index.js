@@ -4,149 +4,116 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-const PRODUCTS = [
-  {category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football'},
-  {category: 'Sporting Goods', price: '$9.99', stocked: true, name: 'Baseball'},
-  {category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball'},
-  {category: 'Electronics', price: '$99.99', stocked: true, name: 'Ipod Touch'},
-  {category: 'Electronics', price: '$399.99', stocked: false, name: 'iPhone 5'},
-  {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7'}
-]
-
-class ProductCategoryRow extends React.Component {
-  render() {
-    const category = this.props.category;
-    return (
-      <tr>
-        <th colSpan="2">
-          {category}
-        </th>
-      </tr>
-    );
-  }
+function Square(props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
 }
 
-class ProductRow extends React.Component {
-  render() {
-    const product = this.props.product;
-    const name = product.stocked ? 
-      product.name : <span style={{color: 'red'}}>{product.name}</span>;
-
-    return (
-      <tr>
-        <td>{name}</td>
-        <td>{product.price}</td>
-      </tr>
-    );
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
   }
+  return null;
 }
 
-class ProductTable extends React.Component {
-  render() {
-    const filterText = this.props.filterText;
-    const inStockOnly = this.props.inStockOnly;
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
 
-    const rows = [];
-    let lastCategory = null;
+    this.state = {
+      squares: Array(9).fill(null),
+      xIsNext: true
+    };
+  }
 
-    this.props.products.forEach((product) => {
-      if (product.name.indexOf(filterText) === -1) {
-        return;
-      }
-      if (inStockOnly && !product.stocked) {
-        return;
-      }
-      if (product.category !== lastCategory) {
-        rows.push(
-          <ProductCategoryRow
-            category={product.category}
-            key={product.category} />
-        );
-      }
-      rows.push(
-        <ProductRow
-          product={product}
-          key={product.name} />
-      );
-      lastCategory = product.category;
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    const xIsNext = this.state.xIsNext;
+    squares[i] = xIsNext ? 'X' : 'O';
+    this.setState({
+      squares: squares,
+      xIsNext: !xIsNext
     });
-    
-    return (
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-    );
-  }
-}
-
-class SearchBar extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-    this.handleInStockOnlyChange = this.handleInStockOnlyChange.bind(this);
   }
 
-  handleFilterTextChange(event) {
-    this.props.onFilterTextChange(event.target.value);
-  }
-
-  handleInStockOnlyChange(event) {
-    this.props.onInStockOnlyChange(event.target.checked);
+  renderSquare(i) {
+    return <Square value={this.state.squares[i]} onClick={() => this.handleClick(i)} />;
   }
 
   render() {
-    const filterText = this.props.filterText;
-    const inStockOnly = this.props.inStockOnly;
-    return (
-      <form>
-        <input type="text" placeholder="Search..." value={filterText} onChange={this.handleFilterTextChange} />
-        <p>
-          <input type="checkbox" checked={inStockOnly} onChange={this.handleInStockOnlyChange}/>
-          {' '}
-          Only show products in stock
-        </p>
-      </form>
-    );
-  }
-}
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
 
-class FilterableProductTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {filterText: '', inStockOnly: false};
-
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-    this.handleInStockOnlyChange = this.handleInStockOnlyChange.bind(this);
-  }
-
-  handleFilterTextChange(filterText) {
-    this.setState({filterText: filterText});
-  }
-
-  handleInStockOnlyChange(inStockOnly) {
-    this.setState({inStockOnly: inStockOnly});
-  }
-
-  render() {
     return (
       <div>
-        <SearchBar filterText={this.state.filterText} inStockOnly={this.state.inStockOnly} onFilterTextChange={this.handleFilterTextChange} onInStockOnlyChange={this.handleInStockOnlyChange} />
-        <ProductTable products={this.props.products} filterText={this.state.filterText} inStockOnly={this.state.inStockOnly} />
+        <div className="status">{status}</div>
+        <div className="board-row">
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
+        </div>
       </div>
-    )
+    );
   }
 }
 
-ReactDOM.render(<FilterableProductTable products={PRODUCTS} />, document.getElementById('root'));
+class Game extends React.Component {
+  render() {
+    return (
+      <div className="game">
+        <div className="game-board">
+          <Board />
+        </div>
+        <div className="game-info">
+          <div>{/* status */}</div>
+          <ol>{/* TODO */}</ol>
+        </div>
+      </div>
+    );
+  }
+}
+
+// ========================================
+
+ReactDOM.render(
+  <Game />,
+  document.getElementById('root')
+);
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
