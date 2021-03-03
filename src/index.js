@@ -123,7 +123,7 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[history.length - 1];
     const winner = calculateWinner(current.squares);
-    const sort = this.state.isAscending ? 'Ascending' : 'Descending';
+    const sort = this.state.isAscending ? 'Descending' : 'Ascending';
 
     const moves = history.map((step, move) => {
       const desc = move ? 
