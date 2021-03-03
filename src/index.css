@@ -53,3 +53,7 @@ ul {
 .font-weight-bold {
   font-weight: bold;
 }
+
+.winnerCell {
+  background-color: yellow;
+}
