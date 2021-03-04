@@ -56,7 +56,6 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
       isAscending: true,
-      line: []
     };
 
     this.handleClick = this.handleClick.bind(this);
